@@ -4,6 +4,8 @@ package breezetest
 
 	public class BreezeTest extends EventDispatcher
 	{
+		public static const VERSION:String = "0.2.0";
+
 		private var _testSuites:Array = [];
 		private var _index:int = 0;
 		private var _runner:TestSuiteRunner;
