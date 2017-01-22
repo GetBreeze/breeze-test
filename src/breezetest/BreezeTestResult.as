@@ -62,7 +62,12 @@ package breezetest
 
 		public function get totalFailedTests():int
 		{
-			return failedTestSuites.length;
+			var failedTests:int = 0;
+			for each(var result:TestSuiteResult in testSuiteResults)
+			{
+				failedTests += result.failedTests.length;
+			}
+			return failedTests;
 		}
 
 	}
