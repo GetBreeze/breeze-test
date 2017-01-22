@@ -35,9 +35,6 @@ package tests
 
 		public function testAsyncTestSuite(async:Async):void
 		{
-			// This is not yet implemented
-
-			/*
 			var testSuite:SampleAsyncTestSuite = new SampleAsyncTestSuite();
 
 			_runner = new TestSuiteRunner(testSuite);
@@ -53,9 +50,6 @@ package tests
 			}));
 
 			_runner.run();
-			*/
-
-			async.complete();
 		}
 
 	}
