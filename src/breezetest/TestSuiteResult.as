@@ -6,10 +6,14 @@ package breezetest
 
 		public var testResults:Vector.<TestResult> = new Vector.<TestResult>();
 
+		public var setupResult:TestResult;
+
+		public var tearDownResult:TestResult;
+
 
 		public function get passed():Boolean
 		{
-			return totalFailedTests == 0;
+			return (totalFailedTests == 0) && (setupResult == null) && (tearDownResult == null);
 		}
 
 

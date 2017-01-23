@@ -192,10 +192,11 @@ package breezetest
 		private function failClassSetup(error:Error):void
 		{
 			var result:TestResult = new TestResult();
-			result.name = 'Class setup failed';
+			result.name = 'setupClass';
 			result.className = getQualifiedClassName(_testObject);
 			result.error = error;
-			_runnerResult.testResults.push(result);
+			result.passed = false;
+			_runnerResult.setupResult = result;
 			dispatchEvent(new TestSuiteRunnerEvent(TestSuiteRunnerEvent.TEST_CLASS_END, this));
 		}
 
@@ -232,9 +233,12 @@ package breezetest
 
 		private function failClassTearDown(error:Error):void
 		{
-			_result.name = 'Class tear down';
-			_result.error = error;
-			_result.passed = false;
+			var result:TestResult = new TestResult();
+			result.name = 'tearDownClass';
+			result.className = getQualifiedClassName(_testObject);
+			result.error = error;
+			result.passed = false;
+			_runnerResult.tearDownResult = result;
 			dispatchEvent(new TestSuiteRunnerEvent(TestSuiteRunnerEvent.TEST_CLASS_END, this));
 		}
 

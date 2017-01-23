@@ -43,12 +43,24 @@ package breezetest
 					output('');
 					output(testSuiteResult.className);
 
-					for each(var testResult:TestResult in testSuiteResult.failedTests)
+					// Output class setup error if there's one
+					if (testSuiteResult.setupResult != null)
 					{
-						output('');
-						output(' -' + testResult.name);
-						output(testResult.error.getStackTrace());
-						output('');
+						outputTestResult(testSuiteResult.setupResult);
+					}
+					// Output results for failed tests
+					else
+					{
+						for each(var testResult:TestResult in testSuiteResult.failedTests)
+						{
+							outputTestResult(testResult);
+						}
+
+						// Output class tear down error if there's one
+						if (testSuiteResult.tearDownResult != null)
+						{
+							outputTestResult(testSuiteResult.tearDownResult);
+						}
 					}
 				}
 
@@ -114,6 +126,15 @@ package breezetest
 		public function output(value:String):void
 		{
 			trace(value);
+		}
+
+
+		private function outputTestResult(result:TestResult):void
+		{
+			output('');
+			output(' -' + result.name);
+			output(result.error.getStackTrace());
+			output('');
 		}
 	}
 }
