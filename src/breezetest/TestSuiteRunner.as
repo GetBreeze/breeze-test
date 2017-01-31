@@ -2,7 +2,6 @@ package breezetest
 {
 	import breezetest.async.Async;
 	import breezetest.async.AsyncEvent;
-	import breezetest.errors.AssertionError;
 	import breezetest.utils.classinfo.ClassInfo;
 	import breezetest.utils.classinfo.MethodInfo;
 
@@ -73,7 +72,7 @@ package breezetest
 
 		private function callTestMethod():void
 		{
-			var asyncFactory:Async;
+			var asyncFactory:Async = null;
 			try
 			{
 				// Async
@@ -83,7 +82,7 @@ package breezetest
 					{
 						asyncFactory = new Async(_testObject);
 						asyncFactory.addEventListener(AsyncEvent.COMPLETE, asyncTestComplete);
-						asyncFactory.addEventListener(AsyncEvent.ERROR, asyncError);
+						asyncFactory.addEventListener(AsyncEvent.ERROR, asyncTestError);
 
 						_testObject[_currentTestMethod.name](asyncFactory);
 					}
@@ -98,10 +97,17 @@ package breezetest
 					_testObject[_currentTestMethod.name]();
 				}
 			}
-			catch (error:AssertionError)
+			catch (error:Error)
 			{
 				_result.error = error;
 				dispatchEvent(new TestSuiteRunnerEvent(TestSuiteRunnerEvent.TEST_METHOD_ERROR, this, _result));
+
+				if (asyncFactory != null)
+				{
+					asyncFactory.removeEventListener(AsyncEvent.COMPLETE, asyncTestComplete);
+					asyncFactory.removeEventListener(AsyncEvent.ERROR, asyncTestError);
+					asyncFactory = null;
+				}
 			}
 
 			// Sync test
@@ -112,7 +118,7 @@ package breezetest
 		}
 
 
-		private function asyncError(event:AsyncEvent):void
+		private function asyncTestError(event:AsyncEvent):void
 		{
 			_result.error = event.error;
 			dispatchEvent(new TestSuiteRunnerEvent(TestSuiteRunnerEvent.TEST_METHOD_ERROR, this, _result));
