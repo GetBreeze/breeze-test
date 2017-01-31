@@ -1,6 +1,8 @@
 package breezetest
 {
+	import flash.display.DisplayObject;
 	import flash.events.EventDispatcher;
+	import flash.events.UncaughtErrorEvents;
 
 	public class BreezeTest extends EventDispatcher
 	{
@@ -10,9 +12,21 @@ package breezetest
 		private var _index:int = 0;
 		private var _runner:TestSuiteRunner;
 		private var _result:BreezeTestResult;
+		private var _uncaughtErrorEvents:UncaughtErrorEvents;
 
 		// You can override the BreezeTestOutput class to provide your own output format
 		public var output:BreezeTestOutput = new BreezeTestOutput();
+		
+		
+		public function BreezeTest(root:DisplayObject = null):void
+		{
+			super();
+
+			if(root != null)
+			{
+				_uncaughtErrorEvents = root.loaderInfo.uncaughtErrorEvents;
+			}
+		}
 
 		public function add(value:*):void
 		{
@@ -52,7 +66,7 @@ package breezetest
 			}
 
 			var testClass:Class = _testSuites[_index++] as Class;
-			_runner = new TestSuiteRunner(new testClass());
+			_runner = new TestSuiteRunner(new testClass(), _uncaughtErrorEvents);
 			_runner.addEventListener(TestSuiteRunnerEvent.TEST_METHOD_START, testMethodStart);
 			_runner.addEventListener(TestSuiteRunnerEvent.TEST_METHOD_END, testMethodEnd);
 			_runner.addEventListener(TestSuiteRunnerEvent.TEST_CLASS_END, testSuiteEnd);

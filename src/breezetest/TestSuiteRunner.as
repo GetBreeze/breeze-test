@@ -6,6 +6,7 @@ package breezetest
 	import breezetest.utils.classinfo.MethodInfo;
 
 	import flash.events.EventDispatcher;
+	import flash.events.UncaughtErrorEvents;
 
 	import flash.utils.getQualifiedClassName;
 
@@ -21,10 +22,13 @@ package breezetest
 		private var _runnerResult:TestSuiteResult;
 		private var _asyncCompleteCallback:Function;
 		private var _asyncErrorCallback:Function;
+		private var _uncaughtErrorEvents:UncaughtErrorEvents;
 
-		public function TestSuiteRunner(testObject:*)
+		public function TestSuiteRunner(testObject:*, uncaughtErrorEvents:UncaughtErrorEvents = null)
 		{
 			_testObject = testObject;
+			_uncaughtErrorEvents = uncaughtErrorEvents;
+
 			_classData = new ClassInfo(testObject);
 
 			_methodsToTest = new <MethodInfo>[];
@@ -80,7 +84,7 @@ package breezetest
 				{
 					if (isMethodAsync(_currentTestMethod))
 					{
-						asyncFactory = new Async(_testObject);
+						asyncFactory = new Async(_testObject, _uncaughtErrorEvents);
 						asyncFactory.addEventListener(AsyncEvent.COMPLETE, asyncTestComplete);
 						asyncFactory.addEventListener(AsyncEvent.ERROR, asyncTestError);
 
@@ -365,7 +369,7 @@ package breezetest
 				{
 					_asyncCompleteCallback = onSuccess;
 					_asyncErrorCallback = onError;
-					var async:Async = new Async(null);
+					var async:Async = new Async(null, _uncaughtErrorEvents);
 					async.addEventListener(AsyncEvent.COMPLETE, onAsyncProcessCompleted);
 					async.addEventListener(AsyncEvent.ERROR, onAsyncProcessFailed);
 					try
