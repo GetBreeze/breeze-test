@@ -106,8 +106,11 @@ public class TestUsers
 
 You can run a single or multiple test suites using the ```BreezeTest``` class. Add test suites using the ```add``` method and begin running tests using the ```run``` method. You should also listen for the event ```BreezeTestEvent.TESTS_COMPLETE``` so you know when the tests are done.
 
+Optionally, you can provide a reference to your root `DisplayObject` (i.e. instance of your document class) when creating `BreezeTest` object. This is recommended so that Breeze Test is able to catch any uncaught errors occurring in asynchronous functions for which you have not created a proxy (see [Async Proxy](#async-proxy)).
+
 ```as3
-var breezeTest:BreezeTest = new BreezeTest();
+// 'this' refers to the root DisplayObject
+var breezeTest:BreezeTest = new BreezeTest(this);
 breezeTest.addEventListener(BreezeTestEvent.TESTS_COMPLETE, onTestsComplete);
 
 // Add a single test suite
@@ -164,7 +167,7 @@ async.timeout = 2000;
 
 ### Async Proxy
 
-When testing callback functions or event listeners you must proxy the function using the ```createProxy``` method. This is required so that any thrown exceptions will be automatically caught and handled as a failure.
+If you do not provide a reference to the root `DisplayObject` when creating `BreezeTest` object, errors occurring in asynchronous functions will not be caught and the tests will not be executed successfully. In that case, you will need to proxy your callbacks and event handlers using the `createProxy` method. This way any thrown exceptions will be automatically caught and handled as a failure.
 
 The ```createProxy``` method also has an optional timeout property. The test will fail if the function is not proxied within the amount of time specified.
 
