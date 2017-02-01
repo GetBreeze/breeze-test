@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="ASTest Build Scripts" default="build-swc">
+<project name="ASTest Build Scripts" default="build-swc" basedir=".">
 
 	<!-- Config -->
-	<property file="build.properties"/>
+	<property file="./build.properties"/>
 
 	<!-- Properties -->
 	<property name="name" value="breezetest"/>
