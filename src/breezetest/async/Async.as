@@ -18,6 +18,7 @@ package breezetest.async
 		private var _timeout:int = -1;
 		private var _timer:uint;
 		private var _uncaughtErrorEvents:UncaughtErrorEvents;
+		private static var sUncaughtErrorPriority:int;
 
 		public function Async(testObject:Object, uncaughtErrorEvents:UncaughtErrorEvents = null)
 		{
@@ -27,7 +28,7 @@ package breezetest.async
 			// Handle asynchronous uncaught errors
 			if(_uncaughtErrorEvents != null)
 			{
-				_uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, asyncUncaughtError);
+				_uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, asyncUncaughtError, false, sUncaughtErrorPriority++);
 			}
 		}
 
