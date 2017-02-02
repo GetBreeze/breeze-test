@@ -7,7 +7,7 @@
 	<filename>breezetest</filename>
 	<name>Breeze Test</name>
 	<versionNumber>0.0.1</versionNumber>
-	<copyright>2015 Digital Strawberry LLC</copyright>
+	<copyright>2017 Digital Strawberry LLC</copyright>
 
 	<initialWindow>
 		<content>breezetest.swf</content>
