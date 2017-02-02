@@ -4,7 +4,7 @@ Breeze Test is a library for unit testing Adobe AIR applications. It is designed
 
 ## Getting Started
 
-You can download the latest SWC file from the ```bin``` directory of the releases section of this repo.
+You can download the latest SWC file from the [releases section](https://github.com/GetBreeze/breeze-test/releases) of this repo.
 
 Alternatively you can compile the SWC yourself using the included ANT script in the ```build``` directory.
 
