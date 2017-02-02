@@ -1,4 +1,4 @@
-# Breeze Test
+# Breeze Test [![Build Status](https://travis-ci.org/GetBreeze/breeze-test.svg?branch=master)](https://travis-ci.org/GetBreeze/breeze-test)
 
 Breeze Test is a library for unit testing Adobe AIR applications. It is designed to be simple and intuitive while providing support for asynchronous testing.
 
