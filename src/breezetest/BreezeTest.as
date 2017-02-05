@@ -42,15 +42,17 @@ package breezetest
 		// You can override the BreezeTestOutput class to provide your own output format
 		public var output:BreezeTestOutput = new BreezeTestOutput();
 		
-		
-		public function BreezeTest(root:DisplayObject = null):void
+
+		public function BreezeTest(root:DisplayObject):void
 		{
 			super();
 
-			if(root != null)
+			if(root == null)
 			{
-				_uncaughtErrorEvents = root.loaderInfo.uncaughtErrorEvents;
+				throw new ArgumentError("Parameter root cannot be null.");
 			}
+
+			_uncaughtErrorEvents = root.loaderInfo.uncaughtErrorEvents;
 		}
 
 		public function add(value:*):void

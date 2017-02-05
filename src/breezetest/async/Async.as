@@ -57,37 +57,6 @@ package breezetest.async
 			}
 		}
 
-		public function createProxy(callback:Function, timeout:int = -1, completeAfterRun:Boolean = false):Function
-		{
-			var handler:AsyncProxyHandler = createProxyHandler(callback, timeout);
-
-			if(completeAfterRun)
-			{
-				handler.addEventListener(AsyncProxyHandlerEvent.COMPLETE, function (event:AsyncProxyHandlerEvent):void
-				{
-					event.handler.asyncFactory.complete();
-				});
-			}
-
-			return handler.proxy;
-		}
-
-
-		public function createProxyHandler(callback:Function, timeout:int = -1):AsyncProxyHandler
-		{
-			var handler:AsyncProxyHandler = new AsyncProxyHandler(this, callback, timeout);
-			handler.addEventListener(AsyncProxyHandlerEvent.ERROR, handlerError);
-			_proxyHandlers.push(handler);
-
-			return handler;
-		}
-
-
-		public function run(callback:Function):void
-		{
-			createProxy(callback)();
-		}
-
 
 		public function complete():void
 		{

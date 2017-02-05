@@ -44,7 +44,7 @@ package tests
 			var testSuite:SampleTestSuite = new SampleTestSuite();
 
 			_runner = new TestSuiteRunner(testSuite);
-			_runner.addEventListener(TestSuiteRunnerEvent.TEST_CLASS_END, async.createProxy(function(async:Async, event:TestSuiteRunnerEvent):void
+			_runner.addEventListener(TestSuiteRunnerEvent.TEST_CLASS_END, function(event:TestSuiteRunnerEvent):void
 			{
 				Assert.equals(1, testSuite.setupClassCalls, 'setupClass should be called once');
 				Assert.equals(1, testSuite.tearDownClassCalls, 'tearDownClass should be called once');
@@ -53,7 +53,7 @@ package tests
 				Assert.equals(2, testSuite.testCalls, 'Tests should be called twice');
 
 				async.complete();
-			}));
+			});
 
 			_runner.run();
 		}
@@ -64,7 +64,7 @@ package tests
 			var testSuite:SampleAsyncTestSuite = new SampleAsyncTestSuite();
 
 			_runner = new TestSuiteRunner(testSuite);
-			_runner.addEventListener(TestSuiteRunnerEvent.TEST_CLASS_END, async.createProxy(function(async:Async, event:TestSuiteRunnerEvent):void
+			_runner.addEventListener(TestSuiteRunnerEvent.TEST_CLASS_END, function(event:TestSuiteRunnerEvent):void
 			{
 				Assert.equals(1, testSuite.setupClassCalls, 'setupClass should be called once');
 				Assert.equals(1, testSuite.tearDownClassCalls, 'tearDownClass should be called once');
@@ -73,7 +73,7 @@ package tests
 				Assert.equals(2, testSuite.testCalls, 'Tests should be called twice');
 
 				async.complete();
-			}));
+			});
 
 			_runner.run();
 		}
@@ -89,7 +89,7 @@ package tests
 			var testSuite:SampleErrorTestSuite = new SampleErrorTestSuite();
 
 			_runner = new TestSuiteRunner(testSuite, Main.root.loaderInfo.uncaughtErrorEvents);
-			_runner.addEventListener(TestSuiteRunnerEvent.TEST_CLASS_END, async.createProxy(function(async:Async, event:TestSuiteRunnerEvent):void
+			_runner.addEventListener(TestSuiteRunnerEvent.TEST_CLASS_END, function(event:TestSuiteRunnerEvent):void
 			{
 				Assert.equals(2, _runner.result.failedTests.length, 'Two tests should fail');
 				for each(var result:TestResult in _runner.result.failedTests)
@@ -98,7 +98,7 @@ package tests
 				}
 
 				async.complete();
-			}));
+			});
 
 			_runner.run();
 		}
