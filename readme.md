@@ -63,17 +63,28 @@ public class TestUsers
 }
 ```
 
-If you need to run an asynchronous operation in the `setup` / `tearDown` methods, add a parameter with type `Async`. Once the asynchronous operation finishes, call the `complete` method on the `Async` object.
+If you need to run an asynchronous operation in the `setup` / `tearDown` methods, add a parameter with type `Async`. Once the asynchronous operation finishes, call the `complete` method of the `Async` object.
+
+Furthermore, you can define a public member variable of type `Async` which will automatically reference the current `Async` object (i.e. the one passed to the asynchronous method via parameter). This allows you to complete the asynchronous operation outside of the `setup` / `tearDown` methods without having to manually store the reference to the `Async` object.
 
 ```as3
 public class TestUsers
 {
+	// Automatically set by Breeze Test during each async method call
+	public var currentAsync:Async;
+
 	public function setupClass(async:Async):void
 	{
 		// Asynchronous class setup
 		// ...
 
-		async.complete();
+		setTimeout(asyncClassSetupComplete, 100);
+	}
+
+	private function asyncClassSetupComplete():void
+	{
+		// Calling 'complete' method of the public variable will finish the class setup
+		currentAsync.complete();
 	}
 	
 	public function tearDownClass(async:Async):void
@@ -106,7 +117,7 @@ public class TestUsers
 
 You can run a single or multiple test suites using the ```BreezeTest``` class. Add test suites using the ```add``` method and begin running tests using the ```run``` method. You should also listen for the event ```BreezeTestEvent.TESTS_COMPLETE``` so you know when the tests are done.
 
-Optionally, you can provide a reference to your root `DisplayObject` (i.e. instance of your document class) when creating `BreezeTest` object. This is recommended so that Breeze Test is able to catch any uncaught errors occurring in asynchronous functions for which you have not created a proxy (see [Async Proxy](#async-proxy)).
+Note you must provide a reference to your root `DisplayObject` (i.e. instance of your document class) when creating `BreezeTest` object. This is required so that Breeze Test is able to catch any uncaught errors occurring in asynchronous functions.
 
 ```as3
 // 'this' refers to the root DisplayObject
@@ -165,64 +176,26 @@ You can limit the amount of time an asynchronous method can run by setting the `
 async.timeout = 2000;
 ```
 
-### Async Proxy
-
-If you do not provide a reference to the root `DisplayObject` when creating `BreezeTest` object, errors occurring in asynchronous functions will not be caught and the tests will not be executed successfully. In that case, you will need to proxy your callbacks and event handlers using the `createProxy` method. This way any thrown exceptions will be automatically caught and handled as a failure.
-
-The ```createProxy``` method also has an optional timeout property. The test will fail if the function is not proxied within the amount of time specified.
-
-```as3
-// The callback function must be called in 2000 milliseconds
-var callback:Function = async.createProxy(function():void
-{
-	Assert.isTrue(true);
-	async.complete();
-	
-}, 2000);
-
-// Run the callback in 1000 milliseconds
-setTimeout(callback, 1000);
-```
-
-If you are running a single callback or event listener and you don't want to have to call the ```complete``` method, you can pass ```true``` in for the ```completeAfterRun``` parameter.
-
-```as3
-// The callback function has no time limit and will automatically call the 
-// complete method when finished
-var callback:Function = async.createProxy(function():void
-{
-	Assert.isTrue(true);
-	
-}, -1, true);
-```
-
-### Proxy Parameters
-
-The ```createProxy``` method requires that proxied functions that have parameters begin with an ```Async``` object. Note this is true for event listeners as well.
-
-```as3
-var callback:Function = async.createProxy(function(async:Async, word:String):void
-{
-	async.complete();
-	
-});
-```
-
 ### Testing Event Listeners
 
-You can use the ```createProxy``` method to test event listeners as well. Just remember that the ```Async``` object must be the first parameter in a proxied event handler.
+When testing event listeners, you will usually create event handlers outside of your test methods where you no longer have a reference to the `Async` object. You can however define a public member variable of type `Async` which will automatically reference the current `Async` object (i.e. the one passed to the test method via parameter). This allows you to complete the asynchronous test outside of the test method without having to manually store the reference to the `Async` object.
 
 ```as3
-function handleEvent(async:Async, event:Event):void
+// Automatically set by Breeze Test during each async method call
+public var currentAsync:Async;
+
+private function handleEvent(event:Event):void
 {
 	Assert.isNotNull(event);
-	async.complete();
+
+	// Calling 'complete' method of the public variable will finish the test
+	currentAsync.complete();
 }
 
-function testEventListener(async:Async):void
+public function testEventListener(async:Async):void
 {
 	var obj:MyTestObject = new MyTestObject();
-	obj.addEventListener(Event.COMPLETE, async.createProxy(handleEvent));
+	obj.addEventListener(Event.COMPLETE, handleEvent);
 }
 ```
 
