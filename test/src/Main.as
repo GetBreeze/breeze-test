@@ -36,6 +36,7 @@ package
 	import tests.TestAssert;
 	import tests.TestTestSuiteRunner;
 	import tests.async.TestAsync;
+	import tests.async.TestPublicAsync;
 	import tests.utils.classinfo.TestClassInfo;
 
 	public class Main extends Sprite
@@ -54,7 +55,7 @@ package
 
 			_breezeTest = new BreezeTest(this);
 			_breezeTest.addEventListener(BreezeTestEvent.TESTS_COMPLETE, onTestsComplete);
-			_breezeTest.add([TestAssert, TestTestSuiteRunner, TestClassInfo, TestAsync]);
+			_breezeTest.add([TestAssert, TestTestSuiteRunner, TestClassInfo, TestAsync, TestPublicAsync]);
 			_breezeTest.run();
 		}
 
