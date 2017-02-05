@@ -30,10 +30,20 @@ package breezetest.utils.classinfo
 	public class ClassInfo
 	{
 		private var _methods:Array = [];
+		private var _currentAsyncVariable:String = null;
 
 		public function ClassInfo(object:*)
 		{
 			var xml:XML = describeType(object);
+
+			for each(var variable:XML in xml.elements("variable"))
+			{
+				if(variable.@type == "breezetest.async::Async")
+				{
+					_currentAsyncVariable = variable.@name;
+					break;
+				}
+			}
 
 			for each(var item:XML in xml.elements("method"))
 			{
@@ -78,6 +88,12 @@ package breezetest.utils.classinfo
 		public function get methods():Array
 		{
 			return _methods;
+		}
+
+
+		public function get currentAsyncVariable():String
+		{
+			return _currentAsyncVariable;
 		}
 	}
 }

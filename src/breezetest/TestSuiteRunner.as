@@ -77,6 +77,8 @@ package breezetest
 		
 		private function runNextTest():void
 		{
+			clearCurrentAsync();
+
 			if(_methodsToTest.length > 0)
 			{
 				_currentTestMethod = _methodsToTest.pop();
@@ -112,6 +114,7 @@ package breezetest
 						asyncFactory = new Async(_testObject, _uncaughtErrorEvents);
 						asyncFactory.addEventListener(AsyncEvent.COMPLETE, asyncTestComplete);
 						asyncFactory.addEventListener(AsyncEvent.ERROR, asyncTestError);
+						assignCurrentAsync(asyncFactory);
 
 						_testObject[_currentTestMethod.name](asyncFactory);
 					}
@@ -166,6 +169,7 @@ package breezetest
 			{
 				_result.passed = true;
 			}
+			clearCurrentAsync();
 
 			tearDownTest();
 		}
@@ -397,6 +401,7 @@ package breezetest
 					var async:Async = new Async(null, _uncaughtErrorEvents);
 					async.addEventListener(AsyncEvent.COMPLETE, onAsyncProcessCompleted);
 					async.addEventListener(AsyncEvent.ERROR, onAsyncProcessFailed);
+					assignCurrentAsync(async);
 					try
 					{
 						_testObject[method.name](async);
@@ -423,6 +428,7 @@ package breezetest
 			var callback:Function = _asyncCompleteCallback;
 			_asyncCompleteCallback = null;
 			_asyncErrorCallback = null;
+			clearCurrentAsync();
 			callback();
 		}
 
@@ -435,6 +441,7 @@ package breezetest
 			var callback:Function = _asyncErrorCallback;
 			_asyncCompleteCallback = null;
 			_asyncErrorCallback = null;
+			clearCurrentAsync();
 			callback(event);
 		}
 
@@ -455,6 +462,24 @@ package breezetest
 		private function isMethodAsync(method:MethodInfo):Boolean
 		{
 			return method.parameters.length == 1 && method.parameters[0].type == 'breezetest.async::Async';
+		}
+		
+		
+		private function assignCurrentAsync(async:Async):void
+		{
+			if(_classData.currentAsyncVariable != null)
+			{
+				_testObject[_classData.currentAsyncVariable] = async;
+			}
+		}
+
+
+		private function clearCurrentAsync():void
+		{
+			if(_classData.currentAsyncVariable != null)
+			{
+				_testObject[_classData.currentAsyncVariable] = null;
+			}
 		}
 
 
